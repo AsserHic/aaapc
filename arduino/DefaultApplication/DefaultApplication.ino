@@ -24,11 +24,9 @@ byte shiftRegister[] = { B00000000 };
 
 // Virtual pins:
 const int VP_LED_WHITE     = 0;
-const int VP_LED_YELLOW    = 1;
-const int VP_LED_RED       = 2;
-const int VP_LIGHT_SENSOR1 = 5;
-const int VP_LIGHT_SENSOR2 = 6;
-const int VP_LIGHT_SENSOR3 = 7;
+const int VP_LIGHT_SENSOR1 = 1;
+const int VP_LIGHT_SENSOR2 = 2;
+const int VP_LIGHT_SENSOR3 = 3;
 
 /*
  This routine is executed once for the beginning.
@@ -46,18 +44,22 @@ void setup() {
 
   // Activate serial port with the given boud rate
   Serial.begin(9600);
+
+  // Reset all virtual pins
+  vpFlush();
 }
 
 /*
  This function is called in an infinite loop forever.
  */
 void loop() {
+  setRGBLed(200,   0,   0); delay(500);
+  setRGBLed(0,   200,   0); delay(500);
+  setRGBLed(0,     0, 200); delay(500);
+
   vpSet(VP_LED_WHITE, HIGH);
-  vpSetF(VP_LED_YELLOW, LOW);
   delay(1000);
   vpSet(VP_LED_WHITE, LOW);
-  vpSetF(VP_LED_YELLOW, HIGH);
-  delay(1000);
 }
 
 /*
@@ -109,23 +111,20 @@ void setRGBLed (byte red, byte green, byte blue) {
  Read value of the light sensor.
  */
 int readLightSensor(int pin) {
-  int o1, o2;
-
-  // Make sure that we read one sensor at the time since they have a shared input.
-  switch (pin) {
-    case VP_LIGHT_SENSOR1:
-         vpSet(VP_LIGHT_SENSOR2, false); vpSet(VP_LIGHT_SENSOR3, false);
-         break;
-    case VP_LIGHT_SENSOR2:
-         vpSet(VP_LIGHT_SENSOR1, false); vpSet(VP_LIGHT_SENSOR3, false);
-         break;
-    case VP_LIGHT_SENSOR3:
-         vpSet(VP_LIGHT_SENSOR1, false); vpSet(VP_LIGHT_SENSOR2, false);
-         break;
-    default: Serial.println("ERROR: invalid light sensor pin");
-  }
   vpSetF(pin, true);
   delay(10); // Wait for a stable current on the photo resistor.
+  int value = analogRead(LIGHT_SENSOR);
+  vpSetF(pin, false); // Make sure that we do not leak connections to the shared sink
+  return value;
+}
 
-  return analogRead(LIGHT_SENSOR);
+/*
+ Send an error message to the user.
+ */
+void writeError(char* message) {
+  Serial.write(message);
+
+  analogWrite(PASSIVE_BUZZLER, 400);
+  delay(500);
+  analogWrite(PASSIVE_BUZZLER, 0);
 }
