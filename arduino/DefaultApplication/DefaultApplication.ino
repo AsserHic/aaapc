@@ -18,9 +18,10 @@ const int PASSIVE_BUZZLER = 11; // PWM sound pitch
 
 const int SR_CLOCK  =  4; // Shift register: clock
 const int SR_LATCH  =  7; // Shift register: latch
-const int SR_SERIAL = 13; // Shift register: serial output
+const int SR_SERIAL = 12; // Shift register: serial output
 
-byte shiftRegister[] = { B00000000 };
+// 3 times 74HC595 shift register
+byte shiftRegister[] = { B00000000, B00000000, B00000000 };
 
 // Virtual pins:
 const int VP_LED_WHITE     = 0;
@@ -56,6 +57,7 @@ void loop() {
   setRGBLed(200,   0,   0); delay(500);
   setRGBLed(0,   200,   0); delay(500);
   setRGBLed(0,     0, 200); delay(500);
+  setRGBLed(0,     0,   0);
 
   vpSetF(VP_LED_WHITE, HIGH);
   delay(1000);
@@ -93,7 +95,7 @@ void vpFlush() {
   digitalWrite(SR_LATCH, LOW);
   for (int reg = ARR_LENGTH(shiftRegister)-1; reg >= 0; reg--) {
     shiftOut(SR_SERIAL, SR_CLOCK, MSBFIRST, shiftRegister[reg]);
-    Serial.print(reg);Serial.print(F(" = "));Serial.println(shiftRegister[reg], BIN);
+    //Serial.print(reg);Serial.print(F(" = "));Serial.println(shiftRegister[reg], BIN);
   }
   digitalWrite(SR_LATCH, HIGH);
 }
@@ -112,7 +114,7 @@ void setRGBLed (byte red, byte green, byte blue) {
  */
 int readLightSensor(int pin) {
   vpSetF(pin, true);
-  delay(10); // Wait for a stable current on the photo resistor.
+  delay(15); // Wait for a stable current on the photo resistor.
   int value = analogRead(LIGHT_SENSOR);
   vpSetF(pin, false); // Make sure that we do not leak connections to the shared sink
   return value;
@@ -123,6 +125,5 @@ int readLightSensor(int pin) {
  */
 void writeError(char* message) {
   Serial.println(message);
-
   tone(PASSIVE_BUZZLER, 400, 500);
 }
