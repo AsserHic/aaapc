@@ -59,17 +59,18 @@ void loop() {
   setRGBLed(0,     0, 200); delay(500);
   setRGBLed(0,     0,   0);
 
-  vpSetF(VP_LED_WHITE, HIGH);
+  vpSetF(VP_LED_WHITE, true);
   delay(1000);
-  vpSetF(VP_LED_WHITE, LOW);
+  vpSetF(VP_LED_WHITE, false);
+  delay(1000);
 }
 
 /*
  Assign given state to the virtual pin.
  */
 inline void vpSet(int pin, boolean value) {
-  int  reg = pin / 7;
-  int  pos = pin % 7;
+  int  reg = pin / 8;
+  int  pos = pin % 8;
   byte regValue;
 
   if (value) {
@@ -92,11 +93,14 @@ void vpSetF(int pin, boolean value) {
  Update current values to all virtual pins.
  */
 void vpFlush() {
+  digitalWrite(SR_CLOCK, LOW);
   digitalWrite(SR_LATCH, LOW);
   for (int reg = ARR_LENGTH(shiftRegister)-1; reg >= 0; reg--) {
     shiftOut(SR_SERIAL, SR_CLOCK, MSBFIRST, shiftRegister[reg]);
-    //Serial.print(reg);Serial.print(F(" = "));Serial.println(shiftRegister[reg], BIN);
+    //Serial.print(reg);Serial.print(F(" = "));Serial.print(shiftRegister[reg], BIN);
+    //Serial.print(" ");
   }
+  //Serial.println("");
   digitalWrite(SR_LATCH, HIGH);
 }
 
