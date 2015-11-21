@@ -11,14 +11,14 @@
 const int LIGHT_SENSOR = A5; // Photo resistor
 
 // OUTPUTS
-const int LED_RGB_RED     =  3; // PWM brightness
-const int LED_RGB_GREEN   =  5; // PWM brightness
+const int LED_RGB_RED     = 10; // PWM brightness
+const int LED_RGB_GREEN   =  9; // PWM brightness
 const int LED_RGB_BLUE    =  6; // PWM brightness
 const int PASSIVE_BUZZLER = 11; // PWM sound pitch
 
-const int SR_CLOCK  = 10; // Shift register: clock
-const int SR_LATCH  =  9; // Shift register: latch
-const int SR_SERIAL =  8; // Shift register: serial output
+const int SR_CLOCK  =  4; // Shift register: clock
+const int SR_LATCH  =  7; // Shift register: latch
+const int SR_SERIAL = 13; // Shift register: serial output
 
 byte shiftRegister[] = { B00000000 };
 
@@ -57,9 +57,9 @@ void loop() {
   setRGBLed(0,   200,   0); delay(500);
   setRGBLed(0,     0, 200); delay(500);
 
-  vpSet(VP_LED_WHITE, HIGH);
+  vpSetF(VP_LED_WHITE, HIGH);
   delay(1000);
-  vpSet(VP_LED_WHITE, LOW);
+  vpSetF(VP_LED_WHITE, LOW);
 }
 
 /*
@@ -91,9 +91,9 @@ void vpSetF(int pin, boolean value) {
  */
 void vpFlush() {
   digitalWrite(SR_LATCH, LOW);
-  for (int reg = ARR_LENGTH(shiftRegister)-1; reg >= 0; reg++) {
+  for (int reg = ARR_LENGTH(shiftRegister)-1; reg >= 0; reg--) {
     shiftOut(SR_SERIAL, SR_CLOCK, MSBFIRST, shiftRegister[reg]);
-    //Serial.print(reg);Serial.print(F(" = "));Serial.println(shiftRegister[reg], BIN);
+    Serial.print(reg);Serial.print(F(" = "));Serial.println(shiftRegister[reg], BIN);
   }
   digitalWrite(SR_LATCH, HIGH);
 }
@@ -122,9 +122,7 @@ int readLightSensor(int pin) {
  Send an error message to the user.
  */
 void writeError(char* message) {
-  Serial.write(message);
+  Serial.println(message);
 
-  analogWrite(PASSIVE_BUZZLER, 400);
-  delay(500);
-  analogWrite(PASSIVE_BUZZLER, 0);
+  tone(PASSIVE_BUZZLER, 400, 500);
 }
