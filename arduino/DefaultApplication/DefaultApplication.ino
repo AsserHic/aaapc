@@ -21,7 +21,9 @@ const int SR_LATCH  =  7; // Shift register: latch
 const int SR_SERIAL = 12; // Shift register: serial output
 
 // 3 times 74HC595 shift register
-byte shiftRegister[] = { B00000000, B00000000, B00000000 };
+byte shiftRegister[] = { B00000000,
+                         B00000000,
+                         B00000000 };
 
 // Virtual pins:
 const int VP_LED_WHITE     = 0;
@@ -59,10 +61,11 @@ void loop() {
   setRGBLed(0,     0, 200); delay(500);
   setRGBLed(0,     0,   0);
 
-  vpSetF(VP_LED_WHITE, true);
-  delay(1000);
-  vpSetF(VP_LED_WHITE, false);
-  delay(1000);
+  vpSetF(0, true); delay(2000); vpSet(0, false);
+  vpSetF(2, true); delay(2000); vpSet(2, false);
+  vpSetF(7, true); delay(2000); vpSet(7, false);
+
+  Serial.println(readLightSensor(VP_LIGHT_SENSOR1));
 }
 
 /*
@@ -71,14 +74,12 @@ void loop() {
 inline void vpSet(int pin, boolean value) {
   int  reg = pin / 8;
   int  pos = pin % 8;
-  byte regValue;
 
   if (value) {
-     regValue = bitSet(shiftRegister[reg], pos);
+     bitSet(shiftRegister[reg], pos);
   } else {
-     regValue = bitClear(shiftRegister[reg], pos);
+     bitClear(shiftRegister[reg], pos);
   }
-  shiftRegister[reg] = regValue;
 }
 
 /*
@@ -97,10 +98,10 @@ void vpFlush() {
   digitalWrite(SR_LATCH, LOW);
   for (int reg = ARR_LENGTH(shiftRegister)-1; reg >= 0; reg--) {
     shiftOut(SR_SERIAL, SR_CLOCK, MSBFIRST, shiftRegister[reg]);
-    //Serial.print(reg);Serial.print(F(" = "));Serial.print(shiftRegister[reg], BIN);
-    //Serial.print(" ");
+    Serial.print(reg);Serial.print(F(" = "));Serial.print(shiftRegister[reg], BIN);
+    Serial.print(" ");
   }
-  //Serial.println("");
+  Serial.println("");
   digitalWrite(SR_LATCH, HIGH);
 }
 
