@@ -8,7 +8,8 @@
 
 // Arduino pins:
 // INPUTS
-const int LIGHT_SENSOR = A5; // Photo resistor
+const int LIGHT_SENSOR   = A5; // Photo resistor
+const int HUMAN_DETECTOR = A4; // IR move detector
 
 // OUTPUTS
 const int LED_RGB_RED     = 10; // PWM brightness
@@ -43,7 +44,8 @@ void setup() {
   pinMode(SR_LATCH,      OUTPUT);
   pinMode(SR_SERIAL,     OUTPUT);
 
-  pinMode(LIGHT_SENSOR, INPUT);
+  pinMode(LIGHT_SENSOR,   INPUT);
+  pinMode(HUMAN_DETECTOR, INPUT);
 
   // Activate serial port with the given boud rate
   Serial.begin(9600);
@@ -56,6 +58,8 @@ void setup() {
  This function is called in an infinite loop forever.
  */
 void loop() {
+  digitalWrite(LED_BUILTIN, digitalRead(HUMAN_DETECTOR));
+  /*
   setRGBLed(200,   0,   0); delay(500);
   setRGBLed(0,   200,   0); delay(500);
   setRGBLed(0,     0, 200); delay(500);
@@ -69,6 +73,7 @@ void loop() {
   Serial.print(F(", "));
   Serial.println(readLightSensor(VP_LIGHT_SENSOR3));
   vpSetF(VP_LED_WHITE, false);
+  */
 }
 
 /*
