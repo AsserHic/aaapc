@@ -61,11 +61,14 @@ void loop() {
   setRGBLed(0,     0, 200); delay(500);
   setRGBLed(0,     0,   0);
 
-  vpSetF(0, true); delay(2000); vpSet(0, false);
-  vpSetF(2, true); delay(2000); vpSet(2, false);
-  vpSetF(7, true); delay(2000); vpSet(7, false);
-
-  Serial.println(readLightSensor(VP_LIGHT_SENSOR1));
+  vpSetF(VP_LED_WHITE, true);
+  delay(500);
+  Serial.print(readLightSensor(VP_LIGHT_SENSOR1));
+  Serial.print(F(", "));
+  Serial.print(readLightSensor(VP_LIGHT_SENSOR2));
+  Serial.print(F(", "));
+  Serial.println(readLightSensor(VP_LIGHT_SENSOR3));
+  vpSetF(VP_LED_WHITE, false);
 }
 
 /*
@@ -98,10 +101,7 @@ void vpFlush() {
   digitalWrite(SR_LATCH, LOW);
   for (int reg = ARR_LENGTH(shiftRegister)-1; reg >= 0; reg--) {
     shiftOut(SR_SERIAL, SR_CLOCK, MSBFIRST, shiftRegister[reg]);
-    Serial.print(reg);Serial.print(F(" = "));Serial.print(shiftRegister[reg], BIN);
-    Serial.print(" ");
   }
-  Serial.println("");
   digitalWrite(SR_LATCH, HIGH);
 }
 
