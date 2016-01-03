@@ -68,19 +68,6 @@ void loop() {
   setRGBLed(0,     0,   0);
 
   /*
-  vpSetF(VP_LED_BLUE, true);delay(1000); vpSet(VP_LED_BLUE, false);
-  vpSetF(VP_LED_WHITE, true);delay(1000); vpSet(VP_LED_WHITE, false);
-  vpSetF(VP_LED_YELLOW, true);delay(1000); vpSet(VP_LED_YELLOW, false);
-  */
-  vpSet(VP_LED_WHITE, true);
-  vpSet(VP_LED_BLUE, true);
-  vpSetF(VP_LED_YELLOW, true);
-  delay(1000); vpFlush(); delay(1000);
-  vpSet(VP_LED_WHITE, false);
-  vpSet(VP_LED_BLUE, false);
-  vpSetF(VP_LED_YELLOW, false);
-
-  /*
   Serial.print(readLightSensor(VP_LIGHT_SENSOR1));
   Serial.print(F(", "));
   Serial.print(readLightSensor(VP_LIGHT_SENSOR2));
@@ -115,7 +102,6 @@ void vpSetF(int pin, boolean value) {
  Update current values to all virtual pins.
  */
 void vpFlush() {
-  digitalWrite(SR_CLOCK, LOW);
   digitalWrite(SR_LATCH, LOW);
   for (int reg = ARR_LENGTH(shiftRegister)-1; reg >= 0; reg--) {
     shiftOut(SR_SERIAL, SR_CLOCK, MSBFIRST, shiftRegister[reg]);
