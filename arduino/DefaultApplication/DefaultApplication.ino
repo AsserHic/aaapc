@@ -21,10 +21,8 @@ const int SR_CLOCK  =  4; // Shift register: clock
 const int SR_LATCH  =  7; // Shift register: latch
 const int SR_SERIAL = 12; // Shift register: serial output
 
-// 3 times 74HC595 shift register
-byte shiftRegister[] = { B00000000,
-                         B00000000,
-                         B00000000 };
+// 1 times 74HC595 shift register
+byte shiftRegister[] = { B00000000 };
 
 // Virtual pins:
 const int VP_LED_WHITE     = 0;
@@ -60,12 +58,21 @@ void setup() {
  This function is called in an infinite loop forever.
  */
 void loop() {
+  tone(PASSIVE_BUZZLER, 600, 300);
+
   digitalWrite(LED_BUILTIN, digitalRead(HUMAN_DETECTOR));
 
   setRGBLed(200,   0,   0); delay(500);
   setRGBLed(0,   200,   0); delay(500);
   setRGBLed(0,     0, 200); delay(500);
   setRGBLed(0,     0,   0);
+
+  for (int reg = 0; reg < ARR_LENGTH(shiftRegister)*8; reg++) {
+    vpSetF(reg, true);
+    delay(500);
+    vpSet(reg, false);
+  }
+  vpFlush();
 
   /*
   Serial.print(readLightSensor(VP_LIGHT_SENSOR1));
