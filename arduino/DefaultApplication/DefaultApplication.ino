@@ -10,8 +10,10 @@
 // INPUTS
 const int LIGHT_SENSOR   = A5; // Photo resistor
 const int HUMAN_DETECTOR = A4; // IR move detector
+const int US_DIST_ECHO   =  8; // Ultrasonic HC-SR04 distance sensor
 
 // OUTPUTS
+const int US_DIST_TRIG    =  2; // Ultrasonic HC-SR04 distance sensor
 const int LED_RGB_RED     = 10; // PWM brightness
 const int LED_RGB_GREEN   =  9; // PWM brightness
 const int LED_RGB_BLUE    =  6; // PWM brightness
@@ -43,7 +45,9 @@ void setup() {
   pinMode(SR_CLOCK,      OUTPUT);
   pinMode(SR_LATCH,      OUTPUT);
   pinMode(SR_SERIAL,     OUTPUT);
+  pinMode(US_DIST_TRIG,  OUTPUT);
 
+  pinMode(US_DIST_ECHO,   INPUT);
   pinMode(LIGHT_SENSOR,   INPUT);
   pinMode(HUMAN_DETECTOR, INPUT);
 
@@ -58,7 +62,7 @@ void setup() {
  This function is called in an infinite loop forever.
  */
 void loop() {
-  tone(PASSIVE_BUZZLER, 600, 300);
+  //tone(PASSIVE_BUZZLER, 600, 300);
 
   digitalWrite(LED_BUILTIN, digitalRead(HUMAN_DETECTOR));
 
@@ -81,14 +85,16 @@ void loop() {
   Serial.print(F(", "));
   Serial.println(readLightSensor(VP_LIGHT_SENSOR3));
   */
+
+  //Serial.println(readDistance());
 }
 
 /*
  Assign given state to the virtual pin.
  */
 inline void vpSet(int pin, boolean value) {
-  int  reg = pin / 8;
-  int  pos = pin % 8;
+  int reg = pin / 8;
+  int pos = pin % 8;
 
   if (value) {
      bitSet(shiftRegister[reg], pos);
@@ -134,6 +140,28 @@ int readLightSensor(int pin) {
   int value = analogRead(LIGHT_SENSOR);
   vpSetF(pin, false); // Make sure that we do not leak connections to the shared sink
   return value;
+}
+
+/*
+ Read distance (cm) from the ultrasonic sensor.
+ */
+int readDistance() {
+  long measure;
+
+  digitalWrite(US_DIST_TRIG, LOW);
+  delayMicroseconds(2);
+
+  digitalWrite(US_DIST_TRIG, HIGH);
+  delayMicroseconds(10);
+
+  digitalWrite(US_DIST_TRIG, LOW);
+  measure = pulseIn(US_DIST_ECHO, HIGH);
+
+  measure /= 58.2; // as cm
+  if (measure < 0 || measure > 200) {
+    measure = 0;
+  }
+  return (int)measure;
 }
 
 /*
