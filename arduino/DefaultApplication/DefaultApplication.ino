@@ -28,8 +28,8 @@ byte shiftRegister[] = { B00000000, B00000000, B00000000 };
 
 // Virtual pins:
 const int VP_LED_WHITE     = 0;
-const int VP_LED_BLUE      = 15;
-const int VP_LED_YELLOW    = 23;
+const int VP_LED_YELLOW    = 8;
+const int VP_LED_BLUE      = 16;
 const int VP_LIGHT_SENSOR1 = 1;
 const int VP_LIGHT_SENSOR2 = 2;
 const int VP_LIGHT_SENSOR3 = 3;
@@ -71,14 +71,12 @@ void loop() {
   setRGBLed(0,     0, 200); delay(500);
   setRGBLed(0,     0,   0);
 
-  /*
-  for (int reg = 0; reg < ARR_LENGTH(shiftRegister)*8; reg++) {
-    vpSetF(reg, true);
-    delay(500);
-    vpSet(reg, false);
-  }
+  vpSetF(VP_LED_WHITE,  true); delay(500); vpSet(VP_LED_WHITE,  false);
+  vpSetF(VP_LED_YELLOW, true); delay(500); vpSet(VP_LED_YELLOW, false);
+  vpSetF(VP_LED_BLUE,   true); delay(500); vpSet(VP_LED_BLUE,   false);
   vpFlush();
 
+  /*
   Serial.print(readLightSensor(VP_LIGHT_SENSOR1));
   Serial.print(F(", "));
   Serial.print(readLightSensor(VP_LIGHT_SENSOR2));
