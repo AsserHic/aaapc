@@ -10,6 +10,7 @@
 // INPUTS
 const int LIGHT_SENSOR   = A5; // Photo resistor
 const int HUMAN_DETECTOR = A4; // IR move detector
+const int THERMOMETER    = A0; // LM35 temperature sensor
 const int US_DIST_ECHO   =  8; // Ultrasonic HC-SR04 distance sensor
 
 // OUTPUTS
@@ -50,6 +51,7 @@ void setup() {
   pinMode(US_DIST_ECHO,   INPUT);
   pinMode(LIGHT_SENSOR,   INPUT);
   pinMode(HUMAN_DETECTOR, INPUT);
+  pinMode(THERMOMETER,    INPUT);
 
   // Activate serial port with the given boud rate
   Serial.begin(9600);
@@ -85,6 +87,7 @@ void loop() {
   */
 
   //Serial.println(readDistance());
+  //Serial.println(readTemperature());
 }
 
 /*
@@ -138,6 +141,17 @@ int readLightSensor(int pin) {
   int value = analogRead(LIGHT_SENSOR);
   vpSetF(pin, false); // Make sure that we do not leak connections to the shared sink
   return value;
+}
+
+/*
+ Read temperature as Celcius degrees.
+ */
+float readTemperature() {
+  long  measure = analogRead(THERMOMETER);
+  float temperature;
+
+  temperature = measure * 0.48828125;
+  return temperature;
 }
 
 /*
