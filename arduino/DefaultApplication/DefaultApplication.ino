@@ -33,7 +33,32 @@ const int VP_LED_YELLOW    = 8;
 const int VP_LED_BLUE      = 16;
 const int VP_LIGHT_SENSOR1 = 1;
 const int VP_LIGHT_SENSOR2 = 2;
-const int VP_LIGHT_SENSOR3 = 3;
+
+const int VP_DISPLAY_POS_1 =  3;
+const int VP_DISPLAY_POS_2 =  3;
+const int VP_DISPLAY_POS_3 =  3;
+const int VP_DISPLAY_POS_4 =  3;
+const int VP_DISPLAY_SEG_A =  3; //  Display segments:
+const int VP_DISPLAY_SEG_B =  3; //    AAAA
+const int VP_DISPLAY_SEG_C =  3; //  FF    BB
+const int VP_DISPLAY_SEG_D =  3; //  FF    BB
+const int VP_DISPLAY_SEG_E =  3; //    GGGG
+const int VP_DISPLAY_SEG_F =  3; //  EE    CC
+const int VP_DISPLAY_SEG_G =  3; //  EE    CC
+const int VP_DISPLAY_SEG_P =  3; //    DDDD    PP
+const int DISPLAY_POSITIONS[] = {
+  VP_DISPLAY_POS_1, VP_DISPLAY_POS_2, VP_DISPLAY_POS_3, VP_DISPLAY_POS_4
+};
+const int DISPLAY_SEGMENTS[] = {
+  VP_DISPLAY_SEG_A,
+  VP_DISPLAY_SEG_B,
+  VP_DISPLAY_SEG_C,
+  VP_DISPLAY_SEG_D,
+  VP_DISPLAY_SEG_E,
+  VP_DISPLAY_SEG_F,
+  VP_DISPLAY_SEG_G,
+  VP_DISPLAY_SEG_P
+};
 
 /*
  This routine is executed once for the beginning.
@@ -77,6 +102,14 @@ void loop() {
   vpSetF(VP_LED_YELLOW, true); delay(500); vpSet(VP_LED_YELLOW, false);
   vpSetF(VP_LED_BLUE,   true); delay(500); vpSet(VP_LED_BLUE,   false);
   vpFlush();
+
+  for (int p=0; p<ARR_LENGTH(DISPLAY_POSITIONS); p++) {
+    vpSet(DISPLAY_POSITIONS[p], true);
+    for (int s=0; s<ARR_LENGTH(DISPLAY_SEGMENTS); s++) {
+      vpSetF(DISPLAY_SEGMENTS[s], true); delay(500); vpSet(DISPLAY_SEGMENTS[s], false);
+    }
+    vpSet(DISPLAY_POSITIONS[p], false);
+  }
 
   /*
   Serial.print(readLightSensor(VP_LIGHT_SENSOR1));
