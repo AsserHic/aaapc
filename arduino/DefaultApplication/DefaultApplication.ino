@@ -33,19 +33,19 @@ const int VP_LED_YELLOW    = 8;
 const int VP_LED_BLUE      = 16;
 const int VP_LIGHT_SENSOR1 = 1;
 const int VP_LIGHT_SENSOR2 = 2;
-
-const int VP_DISPLAY_POS_1 =  3;
-const int VP_DISPLAY_POS_2 =  3;
-const int VP_DISPLAY_POS_3 =  3;
-const int VP_DISPLAY_POS_4 =  3;
-const int VP_DISPLAY_SEG_A =  3; //  Display segments:
-const int VP_DISPLAY_SEG_B =  3; //    AAAA
-const int VP_DISPLAY_SEG_C =  3; //  FF    BB
-const int VP_DISPLAY_SEG_D =  3; //  FF    BB
-const int VP_DISPLAY_SEG_E =  3; //    GGGG
-const int VP_DISPLAY_SEG_F =  3; //  EE    CC
-const int VP_DISPLAY_SEG_G =  3; //  EE    CC
-const int VP_DISPLAY_SEG_P =  3; //    DDDD    PP
+// SMA420564 7-segment 4-digit display
+const int VP_DISPLAY_POS_1 = 20;
+const int VP_DISPLAY_POS_2 = 21;
+const int VP_DISPLAY_POS_3 = 22;
+const int VP_DISPLAY_POS_4 = 23;
+const int VP_DISPLAY_SEG_A = 11; //  Display segments:
+const int VP_DISPLAY_SEG_B = 19; //    AAAA
+const int VP_DISPLAY_SEG_C = 17; //  FF    BB
+const int VP_DISPLAY_SEG_D = 14; //  FF    BB
+const int VP_DISPLAY_SEG_E = 13; //    GGGG
+const int VP_DISPLAY_SEG_F = 12; //  EE    CC
+const int VP_DISPLAY_SEG_G = 18; //  EE    CC
+const int VP_DISPLAY_SEG_P = 15; //    DDDD    PP
 const int DISPLAY_POSITIONS[] = {
   VP_DISPLAY_POS_1, VP_DISPLAY_POS_2, VP_DISPLAY_POS_3, VP_DISPLAY_POS_4
 };
