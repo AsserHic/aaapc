@@ -8,7 +8,7 @@
 
 // Arduino pins:
 // INPUTS
-const int LIGHT_SENSOR   = A5; // Photo resistor
+const int LIGHT_SENSORS  = A5; // Photo resistors
 const int HUMAN_DETECTOR = A4; // IR move detector
 const int THERMOMETER    = A0; // LM35 temperature sensor
 const int US_DIST_ECHO   =  8; // Ultrasonic HC-SR04 distance sensor
@@ -74,7 +74,7 @@ void setup() {
   pinMode(US_DIST_TRIG,  OUTPUT);
 
   pinMode(US_DIST_ECHO,   INPUT);
-  pinMode(LIGHT_SENSOR,   INPUT);
+  pinMode(LIGHT_SENSORS,  INPUT);
   pinMode(HUMAN_DETECTOR, INPUT);
   pinMode(THERMOMETER,    INPUT);
 
@@ -89,7 +89,7 @@ void setup() {
  This function is called in an infinite loop forever.
  */
 void loop() {
-  //tone(PASSIVE_BUZZLER, 600, 100);
+  tone(PASSIVE_BUZZLER, 600, 50);
 
   digitalWrite(LED_BUILTIN, digitalRead(HUMAN_DETECTOR));
 
@@ -101,26 +101,23 @@ void loop() {
   vpSetF(VP_LED_WHITE,  true); delay(500); vpSet(VP_LED_WHITE,  false);
   vpSetF(VP_LED_YELLOW, true); delay(500); vpSet(VP_LED_YELLOW, false);
   vpSetF(VP_LED_BLUE,   true); delay(500); vpSet(VP_LED_BLUE,   false);
-  vpFlush();
+  //vpFlush();
 
   for (int p=0; p<ARR_LENGTH(DISPLAY_POSITIONS); p++) {
     vpSet(DISPLAY_POSITIONS[p], true);
     for (int s=0; s<ARR_LENGTH(DISPLAY_SEGMENTS); s++) {
-      vpSetF(DISPLAY_SEGMENTS[s], true); delay(500); vpSet(DISPLAY_SEGMENTS[s], false);
+      vpSetF(DISPLAY_SEGMENTS[s], true); delay(200); vpSet(DISPLAY_SEGMENTS[s], false);
     }
     vpSet(DISPLAY_POSITIONS[p], false);
   }
+  vpFlush();
 
-  /*
   Serial.print(readLightSensor(VP_LIGHT_SENSOR1));
   Serial.print(F(", "));
-  Serial.print(readLightSensor(VP_LIGHT_SENSOR2));
-  Serial.print(F(", "));
-  Serial.println(readLightSensor(VP_LIGHT_SENSOR3));
-  */
+  Serial.println(readLightSensor(VP_LIGHT_SENSOR2));
 
-  //Serial.println(readDistance());
-  //Serial.println(readTemperature());
+  Serial.println(readDistance());
+  Serial.println(readTemperature());
 }
 
 /*
@@ -170,8 +167,16 @@ void setRGBLed (byte red, byte green, byte blue) {
  */
 int readLightSensor(int pin) {
   vpSetF(pin, true);
-  delay(15); // Wait for a stable current on the photo resistor.
-  int value = analogRead(LIGHT_SENSOR);
+
+  int value = -1;
+  for (int test=0; test<100; test++) {
+      delay(10); // Wait for a stable current on the photo resistor.
+      int new_value = analogRead(LIGHT_SENSORS);
+      int diff      = abs(new_value-value);
+
+      value = new_value;
+      if (diff < 2) break;
+  }
   vpSetF(pin, false); // Make sure that we do not leak connections to the shared sink
   return value;
 }
