@@ -1,0 +1,2 @@
+https://github.com/dbrgn/RPLCD
+sudo pip install RPLCD
