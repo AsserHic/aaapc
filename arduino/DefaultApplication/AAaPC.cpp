@@ -20,16 +20,19 @@ void setup() {
   pinMode(SR_SERIAL,     OUTPUT);
   pinMode(US_DIST_TRIG,  OUTPUT);
 
-  pinMode(US_DIST_ECHO,   INPUT);
-  pinMode(LIGHT_SENSORS,  INPUT);
-  pinMode(HUMAN_DETECTOR, INPUT);
-  pinMode(THERMOMETER,    INPUT);
-
-  // Activate serial port with the given boud rate
-  Serial.begin(9600);
+  pinMode(US_DIST_ECHO,    INPUT);
+  pinMode(LIGHT_SENSORS,   INPUT);
+  pinMode(HUMAN_DETECTOR,  INPUT);
+  pinMode(THERMOMETER,     INPUT);
+  pinMode(JOYSTICK_X,      INPUT);
+  pinMode(JOYSTICK_Y,      INPUT);
+  pinMode(JOYSTICK_BUTTON, INPUT_PULLUP);
 
   // Reset all virtual pins
   vpFlush();
+
+  // Activate serial port with the given boud rate
+  Serial.begin(9600);
 
   custom_setup(); // Application specific initialization
 }
@@ -110,5 +113,28 @@ float readTemperature() {
 
   temperature = measure * 0.48828125;
   return temperature;
+}
+
+int joystickPosition(int pin, int midpoint) {
+  const int TOLERANCE = 1;
+
+  int value = 1023-analogRead(pin);
+  if (value >= midpoint-TOLERANCE && value <= midpoint+TOLERANCE) {
+     return 0;
+  }
+  if (value < midpoint) {
+      value = map(value, 0, midpoint-TOLERANCE, -100, 0);
+  } else {
+      value = map(value, midpoint+TOLERANCE, 1023, 0, 100);
+  }
+  return value;
+}
+
+int getJoystickX() { return joystickPosition(JOYSTICK_X, 506); }
+
+int getJoystickY() { return joystickPosition(JOYSTICK_Y, 515); }
+
+boolean isJoystickPressed() {
+  return !digitalRead(JOYSTICK_BUTTON);
 }
 

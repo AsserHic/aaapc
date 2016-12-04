@@ -10,10 +10,13 @@
 
 // Arduino pins:
 // INPUTS
-const int LIGHT_SENSORS  = A5; // Photo resistors
-const int HUMAN_DETECTOR = A4; // IR move detector
-const int THERMOMETER    = A0; // LM35 temperature sensor
-const int US_DIST_ECHO   =  8; // Ultrasonic HC-SR04 distance sensor
+const int LIGHT_SENSORS   = A5; // Photo resistors
+const int HUMAN_DETECTOR  = A4; // IR move detector
+const int JOYSTICK_BUTTON = A3; // Press
+const int JOYSTICK_X      = A1; // Horizontal position
+const int JOYSTICK_Y      = A2; // Vertical position
+const int THERMOMETER     = A0; // LM35 temperature sensor
+const int US_DIST_ECHO    =  8; // Ultrasonic HC-SR04 distance sensor
 
 // OUTPUTS
 const int US_DIST_TRIG    =  2; // Ultrasonic HC-SR04 distance sensor
@@ -98,6 +101,21 @@ int readDistance();
  Send an error message to the user.
  */
 void writeError(char* message);
+
+/*
+ Returns the current horizontal position of the joystick between -100 and 100.
+ */
+int getJoystickX();
+
+/*
+ Returns the current vertical position of the joystick between -100 and 100.
+ */
+int getJoystickY();
+
+/*
+ Tells if the joystick button is down.
+ */
+boolean isJoystickPressed();
 
 /*
  Read temperature as Celcius degrees.
