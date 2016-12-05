@@ -23,13 +23,10 @@ void loop() {
     String msg   = Serial.readStringUntil('\n');
     String op_id = msg.substring(0, 2);
     String args  = msg.substring(2);
-    String reply;
 
+    Serial.print(op_id);
     if (op_id == "RT") {
-      reply = readTemperature();
-    } else {
-      reply = op_id
-      op_id = F("ER");
+       Serial.println(readTemperature());
     }
   }
 
