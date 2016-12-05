@@ -19,6 +19,20 @@ void custom_setup() {
  This function is called in an infinite loop forever.
  */
 void loop() {
+  if (Serial.available() > 0) {
+    String msg   = Serial.readStringUntil('\n');
+    String op_id = msg.substring(0, 2);
+    String args  = msg.substring(2);
+    String reply;
+
+    if (op_id == "RT") {
+      reply = readTemperature();
+    } else {
+      reply = op_id
+      op_id = F("ER");
+    }
+  }
+
   //tone(PASSIVE_BUZZLER, 600, 50);
 
   digitalWrite(LED_BUILTIN, digitalRead(HUMAN_DETECTOR));
