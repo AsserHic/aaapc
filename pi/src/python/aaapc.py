@@ -13,5 +13,7 @@ keep_alive = True
 while keep_alive:
     arduino.send_request('temperature')
     time.sleep(4)
-    operation, args = arduino.read_response()
-    lcd.show_text('{}: {}'.format(operation, args))
+
+    if arduino.available():
+       operation, args = arduino.read_response()
+       lcd.show_text('{}: {}'.format(operation, args))
