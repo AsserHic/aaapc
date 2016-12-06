@@ -15,6 +15,8 @@ void custom_setup() {
   }
 }
 
+const String SWITCH_ON = "1";
+
 /*
  This function is called in an infinite loop forever.
  */
@@ -29,6 +31,15 @@ void loop() {
        int g = getValue(args, 1).toInt();
        int b = getValue(args, 2).toInt();
        setRGBLed(r, g, b);
+    } else
+    if (op_id == "Lb") {
+       vpSetF(VP_LED_BLUE, args == SWITCH_ON);
+    } else
+    if (op_id == "Lw") {
+       vpSetF(VP_LED_WHITE, args == SWITCH_ON);
+    } else
+    if (op_id == "Ly") {
+       vpSetF(VP_LED_YELLOW, args == SWITCH_ON);
     } else
     if (op_id == "RT") {
        Serial.print(op_id);
@@ -46,11 +57,6 @@ void loop() {
   }
 
   digitalWrite(LED_BUILTIN, digitalRead(HUMAN_DETECTOR));
-
-  vpSetF(VP_LED_WHITE,  true); delay(400); vpSet(VP_LED_WHITE,  false);
-  vpSetF(VP_LED_YELLOW, true); delay(400); vpSet(VP_LED_YELLOW, false);
-  vpSetF(VP_LED_BLUE,   true); delay(400); vpSet(VP_LED_BLUE,   false);
-  //vpFlush();
 
   for (int p=0; p<ARR_LENGTH(DISPLAY_POSITIONS); p++) {
     vpSet(DISPLAY_POSITIONS[p], true);
