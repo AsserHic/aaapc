@@ -122,4 +122,9 @@ boolean isJoystickPressed();
  */
 float readTemperature();
 
+/*
+ Returns the requested value from the comma separated list.
+ */
+String getValue(String data, int index);
+
 #endif

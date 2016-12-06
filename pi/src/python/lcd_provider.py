@@ -14,5 +14,4 @@ class LCDProvider(object):
                            backlight_mode    = BacklightMode.active_low)
 
     def show_text(self, text):
-        print(text)
         self.lcd.write_string(text)

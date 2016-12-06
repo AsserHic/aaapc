@@ -24,13 +24,20 @@ void loop() {
     String op_id = msg.substring(0, 2);
     String args  = msg.substring(2);
 
-    Serial.print(op_id);
     if (op_id == "RT") {
+       Serial.print(op_id);
        Serial.println(readTemperature());
+    } else
+    if (op_id == "RD") {
+       Serial.print(op_id);
+       Serial.println(readDistance());
+    } else
+    if (op_id == "BZ") {
+       int pitch    = getValue(args, 0).toInt();
+       int duration = getValue(args, 1).toInt();
+       tone(PASSIVE_BUZZLER, pitch, duration);
     }
   }
-
-  //tone(PASSIVE_BUZZLER, 600, 50);
 
   digitalWrite(LED_BUILTIN, digitalRead(HUMAN_DETECTOR));
 
@@ -64,7 +71,4 @@ void loop() {
   Serial.print(F(", "));
   Serial.println(readLightSensor(VP_LIGHT_SENSOR2));
   */
-
-  //Serial.println(readDistance());
-  //Serial.println(readTemperature());
 }
