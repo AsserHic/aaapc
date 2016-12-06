@@ -1,30 +1,28 @@
 import RPi.GPIO as GPIO
-from RPLCD import CharLCD, BacklightMode
+from RPLCD import CharLCD, cleared, cursor
 
 class LCDProvider(object):
 
     def __init__(self):
-		self.line1 = ''
-		self.line2 = ''
+        self.line1 = ''
+        self.line2 = ''
 
         GPIO.setwarnings(False)
         self.lcd = CharLCD(pin_rs=32, pin_e=40, pins_data=[29, 31, 11, 12],
                            cols=16, rows=2, dotsize=8,
                            numbering_mode    = GPIO.BOARD,
-                           auto_linebreaks   = True,
+                           auto_linebreaks   = False,
                            pin_backlight     = None,
-                           backlight_enabled = True,
-                           backlight_mode    = BacklightMode.active_low)
+                           backlight_enabled = True)
         self.lcd.clear()
 
-    def _update_display():
-		text = line1+'\n'+line2
-		self.lcd.write_string(text)
+    def _update_display(self):
+        with cleared(self.lcd):
+             self.lcd.write_string(self.line1)
+        with cursor(self.lcd, 1, 0):
+             self.lcd.write_string(self.line2)
 
-    def show_text(self, text):
-        text = text[:16]
-        l    = len(text)
-        if l < 16:
-			text = text+(' '*(16-l))
-	    self.line1 = self.line2
-	    self.line2 = text
+    def show_text(self, msg):
+	self.line1 = self.line2
+	self.line2 = msg
+        self._update_display()

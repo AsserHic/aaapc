@@ -23,7 +23,6 @@ class ArduinoConnection(object):
 
     def _readline(self):
         line = self.serial_con.readline()
-        print(line)
         return line
 
     def read_response(self):

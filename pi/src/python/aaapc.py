@@ -12,10 +12,10 @@ lcd = LCDProvider()
 
 keep_alive = True
 while keep_alive:
-    arduino.send_request('rgb_led', [random.randint(0, 200) for i in range(3)])
-    arduino.send_request('sound', [8000, 200])
-    #arduino.send_request('temperature')
-    arduino.send_request('distance')
+    arduino.send_request('rgb_led', [random.randint(0, 150) for i in range(3)])
+    arduino.send_request('sound', [8000, 150])
+    arduino.send_request('temperature')
+    #arduino.send_request('distance')
     time.sleep(4)
 
     if arduino.available():
