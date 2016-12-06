@@ -7,6 +7,7 @@ OPERATIONS = {
   'led_yellow':    'Ly',
   'light_sensor1': 'P1',
   'light_sensor2': 'P2',
+  'rgb_led':       'Lx',
   'sound':         'BZ',
   'temperature':   'RT',
 }

@@ -19,11 +19,17 @@ void custom_setup() {
  This function is called in an infinite loop forever.
  */
 void loop() {
-  if (Serial.available() > 0) {
+  while (Serial.available() > 0) {
     String msg   = Serial.readStringUntil('\n');
     String op_id = msg.substring(0, 2);
     String args  = msg.substring(2);
 
+    if (op_id == "Lx") {
+       int r = getValue(args, 0).toInt();
+       int g = getValue(args, 1).toInt();
+       int b = getValue(args, 2).toInt();
+       setRGBLed(r, g, b);
+    } else
     if (op_id == "RT") {
        Serial.print(op_id);
        Serial.println(readTemperature());
@@ -40,11 +46,6 @@ void loop() {
   }
 
   digitalWrite(LED_BUILTIN, digitalRead(HUMAN_DETECTOR));
-
-  setRGBLed(200,   0,   0); delay(500);
-  setRGBLed(0,   200,   0); delay(500);
-  setRGBLed(0,     0, 200); delay(500);
-  setRGBLed(0,     0,   0);
 
   vpSetF(VP_LED_WHITE,  true); delay(400); vpSet(VP_LED_WHITE,  false);
   vpSetF(VP_LED_YELLOW, true); delay(400); vpSet(VP_LED_YELLOW, false);
