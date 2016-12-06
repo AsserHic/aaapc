@@ -17,6 +17,8 @@ class ArduinoConnection(object):
     def __init__(self, tty='/dev/ttyACM0', baud_rate=9600):
         self.serial_con = serial.Serial(tty, baud_rate)
         self.serial_con.flush()
+        while self.serial_con.inWaiting():
+           self.serial_con.read()
 
     def available(self):
         return self.serial_con.inWaiting()
