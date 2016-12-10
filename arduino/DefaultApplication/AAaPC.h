@@ -98,11 +98,6 @@ int readLightSensor(int pin);
 int readDistance();
 
 /*
- Send an error message to the user.
- */
-void writeError(char* message);
-
-/*
  Returns the current horizontal position of the joystick between -100 and 100.
  */
 int getJoystickX();
@@ -121,10 +116,5 @@ boolean isJoystickPressed();
  Read temperature as Celcius degrees.
  */
 float readTemperature();
-
-/*
- Returns the requested value from the comma separated list.
- */
-String getValue(String data, int index);
 
 #endif

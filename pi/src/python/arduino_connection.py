@@ -1,16 +1,15 @@
 import serial
 
-OPERATIONS = {
-  'distance':      'RD',
-  'led_blue':      'Lb',
-  'led_white':     'Lw',
-  'led_yellow':    'Ly',
-  'light_sensor1': 'P1',
-  'light_sensor2': 'P2',
-  'rgb_led':       'Lx',
-  'sound':         'BZ',
-  'temperature':   'RT',
-}
+OPER_ERROR         = 1
+OPER_RGB_LED       = 10
+OPER_BUZZLER       = 15
+OPER_LED_BLUE      = 21
+OPER_LED_WHITE     = 22
+OPER_LED_YELLOW    = 23
+OPER_LIGHT_SENSOR1 = 30
+OPER_LIGHT_SENSOR2 = 31
+OPER_TEMPERATURE   = 33
+OPER_DISTANCE      = 35
 
 class ArduinoConnection(object):
 
@@ -37,10 +36,9 @@ class ArduinoConnection(object):
         return operation, args
 
     def send_request(self, operation, args = None):
-        oper_code = OPERATIONS[operation]
         if args is None:
            args = ''
         elif isinstance(args, list):
            args = ','.join(str(x) for x in args)
-        message = '{}{}\n'.format(oper_code, args)
+        message = '{}{}\n'.format(operation, args)
         self.serial_con.write(message)

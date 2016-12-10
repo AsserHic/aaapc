@@ -10,19 +10,24 @@ arduino = ArduinoConnection()
 
 lcd = LCDProvider()
 
+TO_LCD_OPS = [
+  OPER_DISTANCE,
+  OPER_LIGHT_SENSOR1,
+  OPER_LIGHT_SENSOR2,
+  OPER_TEMPERATURE,
+]
+
 keep_alive = True
 while keep_alive:
-    arduino.send_request('rgb_led', [random.randint(0, 150) for i in range(3)])
-    #arduino.send_request('sound', [8000, 150])
-    arduino.send_request('temperature')
-    #arduino.send_request('distance')
-    time.sleep(4)
+    arduino.send_request(OPER_RGB_LED, [random.randint(0, 150) for i in range(3)])
+    #arduino.send_request(OPER_BUZZLER, [8000, 150])
+    arduino.send_request(OPER_TEMPERATURE)
+    #arduino.send_request(OPER_DISTANCE)
 
     if arduino.available():
        operation, args = arduino.read_response()
-       lcd.show_text('{}: {}'.format(operation, args))
-
-    arduino.send_request('led_blue', 1)
-    time.sleep(1)
-    arduino.send_request('led_blue', 0)
-    time.sleep(1)
+       if operation in TO_LCD_OPS:
+          lcd.show_text('{}: {}'.format(operation, args))
+       elif operation == OPER_ERROR:
+          print('arduino error: {}'.format(args))
+    time.sleep(4)

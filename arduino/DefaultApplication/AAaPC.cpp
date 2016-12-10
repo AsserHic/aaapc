@@ -62,6 +62,9 @@ void vpFlush() {
 }
 
 void setRGBLed (byte red, byte green, byte blue) {
+  red   = constrain(red,   0, 255);
+  green = constrain(green, 0, 255);
+  blue  = constrain(blue,  0, 255);
   analogWrite(LED_RGB_RED,   red);
   analogWrite(LED_RGB_GREEN, green);
   analogWrite(LED_RGB_BLUE,  blue);
@@ -102,11 +105,6 @@ int readDistance() {
   return (int)measure;
 }
 
-void writeError(char* message) {
-  Serial.println(message);
-  tone(PASSIVE_BUZZLER, 400, 500);
-}
-
 float readTemperature() {
   long  measure = analogRead(THERMOMETER);
   float temperature;
@@ -138,17 +136,3 @@ boolean isJoystickPressed() {
   return !digitalRead(JOYSTICK_BUTTON);
 }
 
-String getValue(String data, int index) {
-  int found      = 0;
-  int strIndex[] = { 0, -1 };
-  int maxIndex   = data.length() - 1;
-
-  for (int i = 0; i <= maxIndex && found <= index; i++) {
-      if (data.charAt(i) == ',' || i == maxIndex) {
-         found++;
-         strIndex[0] = strIndex[1] + 1;
-         strIndex[1] = (i == maxIndex) ? i+1 : i;
-      }
-  }
-  return found > index ? data.substring(strIndex[0], strIndex[1]) : "";
-}

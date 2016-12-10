@@ -6,6 +6,17 @@
 
 #include "AAaPC.h"
 
+const int OPER_ERROR         = 1;
+const int OPER_RGB_LED       = 10;
+const int OPER_BUZZLER       = 15;
+const int OPER_LED_BLUE      = 21;
+const int OPER_LED_WHITE     = 22;
+const int OPER_LED_YELLOW    = 23;
+const int OPER_LIGHT_SENSOR1 = 30;
+const int OPER_LIGHT_SENSOR2 = 31;
+const int OPER_TEMPERATURE   = 33;
+const int OPER_DISTANCE      = 35;
+
 /*
  This routine is executed once for the beginning.
  */
@@ -15,47 +26,58 @@ void custom_setup() {
   }
 }
 
-const String SWITCH_ON = "1";
-
 /*
  This function is called in an infinite loop forever.
  */
 void loop() {
   while (Serial.available() > 0) {
-    String msg   = Serial.readStringUntil('\n');
-    String op_id = msg.substring(0, 2);
-    String args  = msg.substring(2);
+    int op_id = Serial.parseInt();
 
-    if (op_id == "Lx") {
-       int r = getValue(args, 0).toInt();
-       int g = getValue(args, 1).toInt();
-       int b = getValue(args, 2).toInt();
-       setRGBLed(r, g, b);
-    } else
-    if (op_id == "Lb") {
-       vpSetF(VP_LED_BLUE, args == SWITCH_ON);
-    } else
-    if (op_id == "Lw") {
-       vpSetF(VP_LED_WHITE, args == SWITCH_ON);
-    } else
-    if (op_id == "Ly") {
-       vpSetF(VP_LED_YELLOW, args == SWITCH_ON);
-    } else
-    if (op_id == "RT") {
-       Serial.print(op_id);
-       Serial.println(readTemperature());
-    } else
-    if (op_id == "RD") {
-       Serial.print(op_id);
-       Serial.println(readDistance());
-    } else
-    if (op_id == "BZ") {
-       int pitch    = getValue(args, 0).toInt();
-       int duration = getValue(args, 1).toInt();
-       tone(PASSIVE_BUZZLER, pitch, duration);
+    switch (op_id) {
+      case OPER_RGB_LED:
+        setRGBLed(Serial.parseInt(),  // Red
+                  Serial.parseInt(),  // Green
+                  Serial.parseInt()); // Blue
+        break;
+      case OPER_LED_BLUE:
+        vpSetF(VP_LED_BLUE, 1 == Serial.parseInt());
+        break;
+      case OPER_LED_WHITE:
+        vpSetF(VP_LED_WHITE, 1 == Serial.parseInt());
+        break;
+      case OPER_LED_YELLOW:
+        vpSetF(VP_LED_YELLOW, 1 == Serial.parseInt());
+        break;
+      case OPER_LIGHT_SENSOR1:
+        Serial.print(op_id);
+        Serial.println(readLightSensor(VP_LIGHT_SENSOR1));
+        break;
+      case OPER_LIGHT_SENSOR2:
+        Serial.print(op_id);
+        Serial.println(readLightSensor(VP_LIGHT_SENSOR2));
+        break;
+      case OPER_TEMPERATURE:
+        Serial.print(op_id);
+        Serial.println(readTemperature());
+        break;
+      case OPER_DISTANCE:
+        Serial.print(op_id);
+        Serial.println(readDistance());
+        break;
+      case OPER_BUZZLER:
+        tone(PASSIVE_BUZZLER,
+             Serial.parseInt(),
+             Serial.parseInt());
+        break;
+      default:
+        writeError("Invalid operation");
     }
   }
 
+  adjust();
+}
+
+void adjust() {
   digitalWrite(LED_BUILTIN, digitalRead(HUMAN_DETECTOR));
 
   for (int p=0; p<ARR_LENGTH(DISPLAY_POSITIONS); p++) {
@@ -79,3 +101,13 @@ void loop() {
   Serial.println(readLightSensor(VP_LIGHT_SENSOR2));
   */
 }
+
+/*
+ Send an error message to the user.
+ */
+void writeError(char* message) {
+  Serial.print(OPER_ERROR);
+  Serial.println(message);
+  tone(PASSIVE_BUZZLER, 400, 500);
+}
+
