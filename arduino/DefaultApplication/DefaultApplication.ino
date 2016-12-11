@@ -38,7 +38,6 @@ void loop() {
   while (Serial.available() > 0) {
     int inputChar = Serial.read();
     if (inputChar != '*') {
-      writeError("INPUTCHAR");
       continue;
     }
 
