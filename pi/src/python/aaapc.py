@@ -3,7 +3,7 @@
 import random
 import time
 
-from arduino_connection import ArduinoConnection
+from arduino_connection import *
 from lcd_provider import LCDProvider
 
 arduino = ArduinoConnection()
@@ -30,4 +30,6 @@ while keep_alive:
           lcd.show_text('{}: {}'.format(operation, args))
        elif operation == OPER_ERROR:
           print('arduino error: {}'.format(args))
+       else:
+          print('Unexpected operation {}: {}.'.format(operation, args))
     time.sleep(4)

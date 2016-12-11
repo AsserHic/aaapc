@@ -32,8 +32,10 @@ class ArduinoConnection(object):
         if text[0] != '*':
             print(text)
             return OPER_ERROR, 'Invalid response'
+        text      = text[0:(len(text)-2)]
         op_delim  = text.index(':', 1)
         operation = text[1:op_delim]
+        operation = int(operation)
         if len(text) > op_delim+1:
             args = text[(op_delim+1):]
         else:
