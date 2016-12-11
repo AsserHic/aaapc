@@ -16,6 +16,11 @@ const int OPER_LIGHT_SENSOR1 = 30;
 const int OPER_LIGHT_SENSOR2 = 31;
 const int OPER_TEMPERATURE   = 33;
 const int OPER_DISTANCE      = 35;
+const int OPER_JOYSTICK      = 38;
+
+int     joystickX      = 0;
+int     joystickY      = 0;
+boolean joystickButton = false;
 
 /*
  This routine is executed once for the beginning.
@@ -31,6 +36,12 @@ void custom_setup() {
  */
 void loop() {
   while (Serial.available() > 0) {
+    int inputChar = Serial.read();
+    if (inputChar != '*') {
+      writeError("INPUTCHAR");
+      continue;
+    }
+
     int op_id = Serial.parseInt();
 
     switch (op_id) {
@@ -49,19 +60,19 @@ void loop() {
         vpSetF(VP_LED_YELLOW, 1 == Serial.parseInt());
         break;
       case OPER_LIGHT_SENSOR1:
-        Serial.print(op_id);
+        writeOperation(op_id);
         Serial.println(readLightSensor(VP_LIGHT_SENSOR1));
         break;
       case OPER_LIGHT_SENSOR2:
-        Serial.print(op_id);
+        writeOperation(op_id);
         Serial.println(readLightSensor(VP_LIGHT_SENSOR2));
         break;
       case OPER_TEMPERATURE:
-        Serial.print(op_id);
+        writeOperation(op_id);
         Serial.println(readTemperature());
         break;
       case OPER_DISTANCE:
-        Serial.print(op_id);
+        writeOperation(op_id);
         Serial.println(readDistance());
         break;
       case OPER_BUZZLER:
@@ -73,6 +84,8 @@ void loop() {
         writeError("Invalid operation");
     }
   }
+
+  updateJoystickStatus(false);
 
   adjust();
 }
@@ -88,26 +101,41 @@ void adjust() {
     vpSet(DISPLAY_POSITIONS[p], false);
   }
   vpFlush();
+}
 
-  /*
-  Serial.print(getJoystickX());
-  Serial.print(F(", "));
-  Serial.print(getJoystickY());
-  Serial.print(F(", "));
-  Serial.println(isJoystickPressed());
-
-  Serial.print(readLightSensor(VP_LIGHT_SENSOR1));
-  Serial.print(F(", "));
-  Serial.println(readLightSensor(VP_LIGHT_SENSOR2));
-  */
+boolean updateJoystickStatus(boolean forceSubmit) {
+  int     currentX      = getJoystickX();
+  int     currentY      = getJoystickX();
+  boolean currentButton = isJoystickPressed();
+  boolean changed       = (joystickX      != currentX) ||
+                          (joystickY      != currentY) ||
+                          (joystickButton != currentButton);
+  if (changed) {
+     joystickX      = currentX;
+     joystickY      = currentY;
+     joystickButton = currentButton;
+  }
+  if (changed || forceSubmit) {
+     writeOperation(OPER_JOYSTICK);
+     Serial.print(currentX);
+     Serial.print(",");
+     Serial.print(currentY);
+     Serial.print(",");
+     Serial.println(currentButton ? 1 : 0);
+  }
 }
 
 /*
  Send an error message to the user.
  */
 void writeError(char* message) {
-  Serial.print(OPER_ERROR);
+  writeOperation(OPER_ERROR);
   Serial.println(message);
   tone(PASSIVE_BUZZLER, 400, 500);
 }
 
+void writeOperation(int op_id) {
+  Serial.print("*");
+  Serial.print(op_id);
+  Serial.print(":");
+}

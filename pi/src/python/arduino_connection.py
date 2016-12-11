@@ -10,6 +10,7 @@ OPER_LIGHT_SENSOR1 = 30
 OPER_LIGHT_SENSOR2 = 31
 OPER_TEMPERATURE   = 33
 OPER_DISTANCE      = 35
+OPER_JOYSTICK      = 38
 
 class ArduinoConnection(object):
 
@@ -27,10 +28,14 @@ class ArduinoConnection(object):
         return line
 
     def read_response(self):
-        text      = self._readline()
-        operation = text[0:2]
-        if len(text) > 3:
-            args = text[2:(len(text)-1)]
+        text = self._readline()
+        if text[0] != '*':
+            print(text)
+            return OPER_ERROR, 'Invalid response'
+        op_delim  = text.index(':', 1)
+        operation = text[1:op_delim]
+        if len(text) > op_delim+1:
+            args = text[(op_delim+1):]
         else:
             args = None
         return operation, args
@@ -40,5 +45,5 @@ class ArduinoConnection(object):
            args = ''
         elif isinstance(args, list):
            args = ','.join(str(x) for x in args)
-        message = '{}{}\n'.format(operation, args)
+        message = '*{}:{}\n'.format(operation, args)
         self.serial_con.write(message)
