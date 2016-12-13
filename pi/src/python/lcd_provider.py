@@ -4,7 +4,7 @@ from RPLCD import CharLCD, cleared, cursor
 class LCDProvider(object):
 
     def __init__(self):
-        self.line1 = ''
+        self.line1 = 'Hello World!'
         self.line2 = ''
 
         GPIO.setwarnings(False)
@@ -14,7 +14,7 @@ class LCDProvider(object):
                            auto_linebreaks   = False,
                            pin_backlight     = None,
                            backlight_enabled = True)
-        self.lcd.clear()
+        self._update_display()
 
     def _update_display(self):
         with cleared(self.lcd):
