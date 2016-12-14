@@ -1,9 +1,19 @@
 #!/usr/bin/env python
 
+import logging
 import random
+from time import sleep
 
 from arduino_connection import *
 from lcd_provider import LCDProvider
+
+def mode_distance(activate):
+    if activate:
+        arduino.send_request(OPER_DISTANCE)
+
+def mode_temperature(activate):
+    if activate:
+        arduino.send_request(OPER_TEMPERATURE)
 
 def mode_led_blue(activate):
     arduino.send_request(OPER_LED_BLUE, (1 if activate else 0))
@@ -18,6 +28,8 @@ MODES = [
     mode_led_blue,
     mode_led_white,
     mode_led_yellow,
+    mode_distance,
+    mode_temperature,
 ]
 currentMode = 0
 
@@ -35,30 +47,30 @@ arduino = ArduinoConnection()
 
 lcd = LCDProvider()
 
-TO_LCD_OPS = [
-  OPER_DISTANCE,
-  OPER_LIGHT_SENSOR1,
-  OPER_LIGHT_SENSOR2,
-  OPER_TEMPERATURE,
-]
-
 keep_alive = True
 while keep_alive:
     arduino.send_request(OPER_RGB_LED, [random.randint(0, 150) for i in range(3)])
 
-    if arduino.available():
+    while arduino.available():
        operation, args = arduino.read_response()
-       if operation in TO_LCD_OPS:
+       if operation == TO_LCD_OPS:
           lcd.show_text('{}: {}'.format(operation, args))
-       elif operation == OPER_JOYSTICK:
+       if operation == OPER_JOYSTICK:
           args = [ int(x) for x in args.split(',') ]
           if args[0] < -98:
               currentMode = changeMode(currentMode, -1)
           elif args[0] > 98:
               currentMode = changeMode(currentMode, 1)
+       elif operation == OPER_DISTANCE:
+           lcd.show_text('dist {}cm'.format(args))
+           if int(args) < 10:
+               arduino.send_request(OPER_BUZZLER, [2000, 100])
+       elif operation == OPER_TEMPERATURE:
+           lcd.show_text('temp {}C'.format(args))
        elif operation == OPER_ERROR:
-          print('arduino error: {}'.format(args))
+          logging.error('arduino error: {}'.format(args))
        else:
-          print('Unexpected operation {}: {}.'.format(operation, args))
+          logging.error('Unexpected operation {}: {}.'.format(operation, args))
+    sleep(0.1)
 
 exit()
