@@ -11,14 +11,15 @@ byte shiftRegister[] = { B00000000, B00000000, B00000000 };
   This initialization is called by the Arduino framework.
  */
 void setup() {
-  pinMode(LED_BUILTIN,   OUTPUT);
-  pinMode(LED_RGB_RED,   OUTPUT);
-  pinMode(LED_RGB_GREEN, OUTPUT);
-  pinMode(LED_RGB_BLUE,  OUTPUT);
-  pinMode(SR_CLOCK,      OUTPUT);
-  pinMode(SR_LATCH,      OUTPUT);
-  pinMode(SR_SERIAL,     OUTPUT);
-  pinMode(US_DIST_TRIG,  OUTPUT);
+  pinMode(LED_BUILTIN,     OUTPUT);
+  pinMode(LED_RGB_RED,     OUTPUT);
+  pinMode(LED_RGB_GREEN,   OUTPUT);
+  pinMode(LED_RGB_BLUE,    OUTPUT);
+  pinMode(SR_CLOCK,        OUTPUT);
+  pinMode(SR_LATCH,        OUTPUT);
+  pinMode(SR_SERIAL,       OUTPUT);
+  pinMode(US_DIST_TRIG,    OUTPUT);
+  pinMode(PASSIVE_BUZZLER, OUTPUT);
 
   pinMode(US_DIST_ECHO,    INPUT);
   pinMode(LIGHT_SENSORS,   INPUT);

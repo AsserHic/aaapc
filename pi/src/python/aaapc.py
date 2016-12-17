@@ -34,7 +34,7 @@ MODES = [
 currentMode = 0
 
 def changeMode(old_mode, adjustment):
-    new_mode = new_mode+adjustment
+    new_mode = old_mode+adjustment
     if new_mode < 0:
         new_mode = len(MODES)-1
     elif new_mode >= len(MODES):
@@ -49,17 +49,15 @@ lcd = LCDProvider()
 
 keep_alive = True
 while keep_alive:
-    arduino.send_request(OPER_RGB_LED, [random.randint(0, 150) for i in range(3)])
+    #arduino.send_request(OPER_RGB_LED, [random.randint(0, 150) for i in range(3)])
 
     while arduino.available():
        operation, args = arduino.read_response()
-       if operation == TO_LCD_OPS:
-          lcd.show_text('{}: {}'.format(operation, args))
        if operation == OPER_JOYSTICK:
           args = [ int(x) for x in args.split(',') ]
-          if args[0] < -98:
+          if args[0] < -99:
               currentMode = changeMode(currentMode, -1)
-          elif args[0] > 98:
+          elif args[0] > 99:
               currentMode = changeMode(currentMode, 1)
        elif operation == OPER_DISTANCE:
            lcd.show_text('dist {}cm'.format(args))

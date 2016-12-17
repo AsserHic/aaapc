@@ -92,6 +92,7 @@ void loop() {
 void adjust() {
   digitalWrite(LED_BUILTIN, digitalRead(HUMAN_DETECTOR));
 
+  /*
   for (int p=0; p<ARR_LENGTH(DISPLAY_POSITIONS); p++) {
     vpSet(DISPLAY_POSITIONS[p], true);
     for (int s=0; s<ARR_LENGTH(DISPLAY_SEGMENTS); s++) {
@@ -100,6 +101,7 @@ void adjust() {
     vpSet(DISPLAY_POSITIONS[p], false);
   }
   vpFlush();
+  */
 }
 
 boolean updateJoystickStatus(boolean forceSubmit) {
