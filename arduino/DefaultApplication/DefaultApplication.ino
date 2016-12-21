@@ -18,6 +18,7 @@ const int OPER_TEMPERATURE   = 33;
 const int OPER_DISTANCE      = 35;
 const int OPER_JOYSTICK      = 38;
 
+int     phase          = 0;
 int     joystickX      = 0;
 int     joystickY      = 0;
 boolean joystickButton = false;
@@ -26,6 +27,8 @@ boolean joystickButton = false;
  This routine is executed once for the beginning.
  */
 void custom_setup() {
+  phase = 0;
+
   for (int pitch=100; pitch<1000; pitch += 100) {
      tone(PASSIVE_BUZZLER, pitch, 100);
   }
@@ -102,15 +105,17 @@ void adjust() {
   }
   vpFlush();
   */
+  phase++;
 }
 
 boolean updateJoystickStatus(boolean forceSubmit) {
-  int     currentX      = getJoystickX();
-  int     currentY      = getJoystickX();
-  boolean currentButton = isJoystickPressed();
-  boolean changed       = (joystickX      != currentX) ||
-                          (joystickY      != currentY) ||
-                          (joystickButton != currentButton);
+  const int TOLERANCE     = 1;
+  int       currentX      = getJoystickX();
+  int       currentY      = getJoystickX();
+  boolean   currentButton = isJoystickPressed();
+  boolean   changed       = (abs(currentX-joystickY) > TOLERANCE) ||
+                            (abs(currentX-joystickY) > TOLERANCE) ||
+                            (joystickButton != currentButton);
   if (changed) {
      joystickX      = currentX;
      joystickY      = currentY;
