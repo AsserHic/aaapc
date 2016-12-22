@@ -5,6 +5,7 @@
  */
 
 #include "AAaPC.h"
+#include "FourDigitDisplay.h"
 
 const int OPER_ERROR         = 1;
 const int OPER_RGB_LED       = 10;
@@ -18,10 +19,11 @@ const int OPER_TEMPERATURE   = 33;
 const int OPER_DISTANCE      = 35;
 const int OPER_JOYSTICK      = 38;
 
-int     phase          = 0;
-int     joystickX      = 0;
-int     joystickY      = 0;
-boolean joystickButton = false;
+FourDigitDisplay digDisplay;
+int              phase          = 0;
+int              joystickX      = 0;
+int              joystickY      = 0;
+boolean          joystickButton = false;
 
 /*
  This routine is executed once for the beginning.
@@ -32,6 +34,11 @@ void custom_setup() {
   for (int pitch=100; pitch<1000; pitch += 100) {
      tone(PASSIVE_BUZZLER, pitch, 100);
   }
+
+  digDisplay.set_value(0, DISPLAY_VALUE_1);
+  digDisplay.set_value(1, DISPLAY_VALUE_2);
+  digDisplay.set_value(2, DISPLAY_VALUE_3);
+  digDisplay.set_value(3, DISPLAY_VALUE_4);
 }
 
 /*
@@ -89,22 +96,14 @@ void loop() {
 
   updateJoystickStatus(false);
 
-  adjust();
+  advance();
 }
 
-void adjust() {
+void advance() {
   digitalWrite(LED_BUILTIN, digitalRead(HUMAN_DETECTOR));
 
-  /*
-  for (int p=0; p<ARR_LENGTH(DISPLAY_POSITIONS); p++) {
-    vpSet(DISPLAY_POSITIONS[p], true);
-    for (int s=0; s<ARR_LENGTH(DISPLAY_SEGMENTS); s++) {
-      vpSetF(DISPLAY_SEGMENTS[s], true); delay(150); vpSet(DISPLAY_SEGMENTS[s], false);
-    }
-    vpSet(DISPLAY_POSITIONS[p], false);
-  }
-  vpFlush();
-  */
+  digDisplay.advance();
+
   phase++;
 }
 
