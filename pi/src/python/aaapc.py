@@ -49,8 +49,6 @@ lcd = LCDProvider()
 
 keep_alive = True
 while keep_alive:
-    #arduino.send_request(OPER_RGB_LED, [random.randint(0, 150) for i in range(3)])
-
     while arduino.available():
        operation, args = arduino.read_response()
        if operation == OPER_JOYSTICK:
@@ -65,6 +63,12 @@ while keep_alive:
                arduino.send_request(OPER_BUZZLER, [2000, 100])
        elif operation == OPER_TEMPERATURE:
            lcd.show_text('temp {}C'.format(args))
+       elif operation == OPER_HUMAN_DETECTOR:
+           if args == '1':
+              color = [random.randint(0, 150) for i in range(3)]
+           else:
+              color = '0,0,0'
+           arduino.send_request(OPER_RGB_LED, color)
        elif operation == OPER_ERROR:
           logging.error('arduino error: {}'.format(args))
        else:

@@ -17,10 +17,12 @@ const int OPER_LIGHT_SENSOR1 = 30;
 const int OPER_LIGHT_SENSOR2 = 31;
 const int OPER_TEMPERATURE   = 33;
 const int OPER_DISTANCE      = 35;
+const int OPER_HUMAN_DETECT  = 36;
 const int OPER_JOYSTICK      = 38;
 
 FourDigitDisplay digDisplay;
 int              phase          = 0;
+boolean          human_present  = false;
 int              joystickX      = 0;
 int              joystickY      = 0;
 boolean          joystickButton = false;
@@ -94,17 +96,31 @@ void loop() {
     }
   }
 
-  updateJoystickStatus(false);
-
   advance();
 }
 
 void advance() {
-  digitalWrite(LED_BUILTIN, digitalRead(HUMAN_DETECTOR));
+  if (phase % 5 == 0) updateHumanDetectorStatus(false);
+  if (phase % 4 == 0) updateJoystickStatus(false);
 
   digDisplay.advance();
 
-  phase++;
+  phase = (phase+1) % 100;
+}
+
+boolean updateHumanDetectorStatus(boolean forceSubmit) {
+  boolean is_active = digitalRead(HUMAN_DETECTOR);
+  boolean changed   = is_active == human_present;
+
+  if (changed) {
+     human_present = is_active;
+     digitalWrite(LED_BUILTIN, is_active);
+  }
+  if (changed || forceSubmit) {
+     writeOperation(OPER_HUMAN_DETECT);
+     Serial.println(is_active ? 1 : 0);
+  }
+  return changed;
 }
 
 boolean updateJoystickStatus(boolean forceSubmit) {
@@ -128,6 +144,7 @@ boolean updateJoystickStatus(boolean forceSubmit) {
      Serial.print(",");
      Serial.println(currentButton ? 1 : 0);
   }
+  return changed;
 }
 
 /*
