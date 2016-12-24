@@ -41,6 +41,7 @@ void custom_setup() {
   digDisplay.set_value(1, DISPLAY_VALUE_2);
   digDisplay.set_value(2, DISPLAY_VALUE_3);
   digDisplay.set_value(3, DISPLAY_VALUE_4);
+  digDisplay.set_enabled(true);
 }
 
 /*
