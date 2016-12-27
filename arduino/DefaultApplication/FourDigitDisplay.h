@@ -6,9 +6,9 @@
 
 const byte DISPLAY_VALUE_VOID = B00000000;
 const byte DISPLAY_VALUE_0    = B11111100;
-const byte DISPLAY_VALUE_1    = B01100000;
-const byte DISPLAY_VALUE_2    = B11011010;
-const byte DISPLAY_VALUE_3    = B11110010;
+const byte DISPLAY_VALUE_1    = B00000110;
+const byte DISPLAY_VALUE_2    = B01011011;
+const byte DISPLAY_VALUE_3    = B01001111;
 const byte DISPLAY_VALUE_4    = B01100110;
 const byte DISPLAY_VALUE_5    = B10110110;
 const byte DISPLAY_VALUE_6    = B10111110;

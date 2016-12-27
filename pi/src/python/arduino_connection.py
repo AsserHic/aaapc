@@ -1,3 +1,4 @@
+import logging
 import serial
 
 OPER_ERROR          = 1
@@ -31,12 +32,16 @@ class ArduinoConnection(object):
     def read_response(self):
         text = self._readline()
         if text[0] != '*':
-            print(text)
-            return OPER_ERROR, 'Invalid response'
-        text      = text[0:(len(text)-2)]
-        op_delim  = text.index(':', 1)
-        operation = text[1:op_delim]
-        operation = int(operation)
+            logging.error(text)
+            return OPER_ERROR, 'Invalid response start'
+        try:
+            text      = text[0:(len(text)-2)]
+            op_delim  = text.index(':', 1)
+            operation = text[1:op_delim]
+            operation = int(operation)
+        except ValueError:
+            logging.error(text)
+            return OPER_ERROR, 'Invalid response code'
         if len(text) > op_delim+1:
             args = text[(op_delim+1):]
         else:

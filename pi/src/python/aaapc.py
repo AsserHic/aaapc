@@ -82,7 +82,7 @@ while keep_alive:
                                           light_sensors[1]))
        elif operation == OPER_HUMAN_DETECTOR:
            if args == '1':
-              color = [random.randint(0, 150) for i in range(3)]
+              color = [random.randint(0, 5)*50 for i in range(3)]
            else:
               color = '0,0,0'
            arduino.send_request(OPER_RGB_LED, color)
