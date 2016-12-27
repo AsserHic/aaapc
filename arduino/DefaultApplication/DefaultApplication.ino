@@ -111,7 +111,7 @@ void advance() {
 
 boolean updateHumanDetectorStatus(boolean forceSubmit) {
   boolean is_active = digitalRead(HUMAN_DETECTOR);
-  boolean changed   = is_active == human_present;
+  boolean changed   = is_active != human_present;
 
   if (changed) {
      human_present = is_active;

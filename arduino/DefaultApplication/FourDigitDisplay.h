@@ -10,11 +10,11 @@ const byte DISPLAY_VALUE_1    = B00000110;
 const byte DISPLAY_VALUE_2    = B01011011;
 const byte DISPLAY_VALUE_3    = B01001111;
 const byte DISPLAY_VALUE_4    = B01100110;
-const byte DISPLAY_VALUE_5    = B10110110;
-const byte DISPLAY_VALUE_6    = B10111110;
-const byte DISPLAY_VALUE_7    = B11100000;
-const byte DISPLAY_VALUE_8    = B11111110;
-const byte DISPLAY_VALUE_9    = B11110110;
+const byte DISPLAY_VALUE_5    = B01101101;
+const byte DISPLAY_VALUE_6    = B01111101;
+const byte DISPLAY_VALUE_7    = B00000111;
+const byte DISPLAY_VALUE_8    = B01111111;
+const byte DISPLAY_VALUE_9    = B01101111;
 
 class FourDigitDisplay {
 
