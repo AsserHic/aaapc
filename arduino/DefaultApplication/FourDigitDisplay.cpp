@@ -29,7 +29,11 @@ void FourDigitDisplay::set_enabled(boolean value) {
 
 void FourDigitDisplay::set_value(int pos, byte value) {
   m_values[pos] = value;
-  disable_if_empty();
+  if (value == DISPLAY_VALUE_VOID) {
+     disable_if_empty();
+  } else {
+     m_enabled = true;
+  }
 }
 
 void FourDigitDisplay::advance() {

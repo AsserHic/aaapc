@@ -20,6 +20,12 @@ const int OPER_DISTANCE      = 35;
 const int OPER_HUMAN_DETECT  = 36;
 const int OPER_JOYSTICK      = 38;
 
+const int DISPLAY_SEQUENCE[] = {
+  DISPLAY_VALUE_VOID, DISPLAY_VALUE_VOID, DISPLAY_VALUE_VOID, DISPLAY_VALUE_VOID,
+  DISPLAY_VALUE_0, DISPLAY_VALUE_1, DISPLAY_VALUE_2, DISPLAY_VALUE_3, DISPLAY_VALUE_4,
+  DISPLAY_VALUE_5, DISPLAY_VALUE_6, DISPLAY_VALUE_7, DISPLAY_VALUE_8, DISPLAY_VALUE_9
+};
+
 FourDigitDisplay digDisplay;
 int              phase          = 0;
 boolean          human_present  = false;
@@ -36,12 +42,6 @@ void custom_setup() {
   for (int pitch=100; pitch<1000; pitch += 100) {
      tone(PASSIVE_BUZZLER, pitch, 100);
   }
-
-  digDisplay.set_value(0, DISPLAY_VALUE_1);
-  digDisplay.set_value(1, DISPLAY_VALUE_2);
-  digDisplay.set_value(2, DISPLAY_VALUE_3);
-  digDisplay.set_value(3, DISPLAY_VALUE_4);
-  digDisplay.set_enabled(true);
 }
 
 /*
@@ -104,9 +104,14 @@ void advance() {
   if (phase % 5 == 0) updateHumanDetectorStatus(false);
   if (phase % 4 == 0) updateJoystickStatus(false);
 
+  if (phase % 100 == 0) {
+    for (int dp=0; dp < 4; dp++) {
+        digDisplay.set_value(dp, DISPLAY_SEQUENCE[(phase/100+dp) % ARR_LENGTH(DISPLAY_SEQUENCE)]);
+    }
+  }
   digDisplay.advance();
 
-  phase = (phase+1) % 100;
+  phase = (phase+1) % 1400;
 }
 
 boolean updateHumanDetectorStatus(boolean forceSubmit) {
