@@ -27,6 +27,8 @@ const int DISPLAY_SEQUENCE[] = {
 };
 
 FourDigitDisplay digDisplay;
+unsigned long    dispUpdated    = 0;
+int              dispPhase      = 0;
 int              phase          = 0;
 boolean          human_present  = false;
 int              joystickX      = 0;
@@ -105,13 +107,18 @@ void advance() {
   if (phase % 4 == 0) updateJoystickStatus(false);
 
   if (phase % 100 == 0) {
-    for (int dp=0; dp < 4; dp++) {
-        digDisplay.set_value(dp, DISPLAY_SEQUENCE[(phase/100+dp) % ARR_LENGTH(DISPLAY_SEQUENCE)]);
+    unsigned long currentTime = millis();
+    if (currentTime > dispUpdated + 1000) {
+       dispUpdated = currentTime;
+       for (int dp=0; dp < 4; dp++) {
+          digDisplay.set_value(dp, DISPLAY_SEQUENCE[(dispPhase+dp) % ARR_LENGTH(DISPLAY_SEQUENCE)]);
+       }
+       if (dispPhase++ >= ARR_LENGTH(DISPLAY_SEQUENCE)) dispPhase = 0;
     }
   }
   digDisplay.advance();
 
-  phase = (phase+1) % 1400;
+  if (phase++ >= 1400) phase = 0;
 }
 
 boolean updateHumanDetectorStatus(boolean forceSubmit) {
