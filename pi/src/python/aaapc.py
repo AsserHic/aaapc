@@ -7,6 +7,8 @@ from time import sleep
 from arduino_connection import *
 from lcd_provider import LCDProvider
 
+logging.basicConfig(level = logging.INFO, format = '%(levelname)s: %(message)s')
+
 def mode_light_sensor(activate):
     if activate:
         arduino.send_request(OPER_LIGHT_SENSOR1)
