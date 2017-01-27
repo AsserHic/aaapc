@@ -71,9 +71,12 @@ while keep_alive:
           elif args[0] > 98:
               currentMode = changeMode(currentMode, 1)
        elif operation == OPER_DISTANCE:
-           lcd.show_text('dist {}cm'.format(args))
-           if int(args) < 10:
+           distance = int(args)
+           if distance <= 0:
+               args = '?'
+           elif distance < 10:
                arduino.send_request(OPER_BUZZLER, [2000, 100])
+           lcd.show_text('dist {}cm'.format(args))
        elif operation == OPER_TEMPERATURE:
            lcd.show_text('temp {}C'.format(args))
        elif operation == OPER_LIGHT_SENSOR1:
@@ -94,5 +97,6 @@ while keep_alive:
           logging.error('Unexpected operation {}: {}.'.format(operation, args))
     sleep(0.1)
 
+lcd.show_text('Exit!')
 logging.info('Bye bye!')
 exit()

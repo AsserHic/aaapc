@@ -19,7 +19,10 @@ void FourDigitDisplay::disable_if_empty() {
        break;
     }
   }
-  if (is_empty) m_enabled = false;
+  if (is_empty) {
+    m_enabled = false;
+    vpSet(DISPLAY_POSITIONS[m_phase], false);
+  }
 }
 
 void FourDigitDisplay::set_enabled(boolean value) {
