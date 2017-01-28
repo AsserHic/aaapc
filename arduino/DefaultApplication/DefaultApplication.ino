@@ -21,10 +21,9 @@ const int OPER_HUMAN_DETECT  = 36;
 const int OPER_JOYSTICK      = 38;
 const int OPER_DISPLAY_SEQ   = 40;
 
-byte DISPLAY_SEQUENCE[150];
-int  disp_seq_len = 0;
-
 FourDigitDisplay digDisplay;
+byte             dispSeq[150];
+int              dispSeqLen     = 0;
 unsigned long    dispUpdated    = 0;
 int              dispPhase      = 0;
 int              phase          = 0;
@@ -43,7 +42,7 @@ void custom_setup() {
      tone(PASSIVE_BUZZLER, pitch, 100);
   }
 
-  disp_seq_len = 0;
+  dispSeqLen = 0;
 }
 
 /*
@@ -109,14 +108,14 @@ void advance() {
   if (phase % 5 == 0) updateHumanDetectorStatus(false);
   if (phase % 4 == 0) updateJoystickStatus(false);
 
-  if (phase % 100 == 0) {
+  if (phase % 100 == 0 && dispSeqLen > 0) {
     unsigned long currentTime = millis();
     if (currentTime > dispUpdated + 1000) {
        dispUpdated = currentTime;
        for (int dp=0; dp < 4; dp++) {
-          digDisplay.set_value(dp, DISPLAY_SEQUENCE[(dispPhase+dp) % disp_seq_len]);
+          digDisplay.set_value(dp, dispSeq[(dispPhase+dp) % dispSeqLen]);
        }
-       if (dispPhase++ >= disp_seq_len) dispPhase = 0;
+       if (dispPhase++ >= dispSeqLen) dispPhase = 0;
     }
   }
   digDisplay.advance();
@@ -136,9 +135,10 @@ void updateDisplaySequence() {
      if (value < 0 || value > 255) {
         value = DISPLAY_VALUE_VOID;
      }
-     DISPLAY_SEQUENCE[i] = value;
+     dispSeq[i] = value;
   }
-  disp_seq_len = length;
+  dispPhase  = 0;
+  dispSeqLen = length;
 }
 
 boolean updateHumanDetectorStatus(boolean forceSubmit) {
