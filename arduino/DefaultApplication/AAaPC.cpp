@@ -107,9 +107,15 @@ int readDistance() {
 }
 
 float readTemperature() {
-  long  measure = analogRead(THERMOMETER);
+  int   measure   = -1;
+  int   new_value = analogRead(THERMOMETER);
   float temperature;
 
+  for (int t=0; t < 10 && abs(measure-new_value) > 1; t++) {
+     delay(10);
+     measure   = new_value;
+     new_value = analogRead(THERMOMETER);
+  }
   temperature = measure * 0.48828125;
   return temperature;
 }

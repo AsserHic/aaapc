@@ -39,7 +39,7 @@ MODES = [
     mode_temperature,
     mode_light_sensor,
 ]
-currentMode = 0
+current_mode = 0
 
 def changeMode(old_mode, adjustment):
     assert adjustment == -1 or adjustment == 1
@@ -67,9 +67,11 @@ while keep_alive:
           if args[0] < -98:
               if args[1] < -98 and args[2] == 1:
                   keep_alive = False
-              currentMode = changeMode(currentMode, -1)
+              current_mode = changeMode(current_mode, -1)
           elif args[0] > 98:
-              currentMode = changeMode(currentMode, 1)
+              current_mode = changeMode(current_mode, 1)
+          elif args[2] == 1:
+              MODES[current_mode](True)
        elif operation == OPER_DISTANCE:
            distance = int(args)
            if distance <= 0:
