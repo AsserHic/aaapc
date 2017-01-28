@@ -13,6 +13,34 @@ OPER_TEMPERATURE    = 33
 OPER_DISTANCE       = 35
 OPER_HUMAN_DETECTOR = 36
 OPER_JOYSTICK       = 38
+OPER_DISPLAY_SEQ    = 40
+
+DISPLAY_CHARS = {
+  ' ': 0b00000000,
+  '0': 0b00111111,
+  '1': 0b00000110,
+  '2': 0b01011011,
+  '3': 0b01001111,
+  '4': 0b01100110,
+  '5': 0b01101101,
+  '6': 0b01111101,
+  '7': 0b00000111,
+  '8': 0b01111111,
+  '9': 0b01101111,
+  '.': 0b10000000,
+  '-': 0b01000000,
+  '^': 0b00000001,
+  '"': 0b00100010,
+  '_': 0b00001000,
+  'A': 0b01110111,
+  'H': 0b01110110,
+  'h': 0b01110100,
+  'E': 0b01111001,
+  'I': 0b00110000,
+  'L': 0b00111000,
+  'o': 0b01011100,
+  'P': 0b01111011,
+}
 
 class ArduinoConnection(object):
 
@@ -55,3 +83,11 @@ class ArduinoConnection(object):
            args = ','.join(str(x) for x in args)
         message = '*{}:{}\n'.format(operation, args)
         self.serial_con.write(message)
+
+    def set_display_sequence(self, text):
+        assert len(text) <= 150
+
+        args = [ len(text) ]
+        for c in text:
+            args.append(DISPLAY_CHARS.get(c, 0))
+        self.send_request(OPER_DISPLAY_SEQ, args)

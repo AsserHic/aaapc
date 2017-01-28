@@ -58,6 +58,8 @@ lcd = LCDProvider()
 
 light_sensors = [0, 0]
 
+arduino.set_display_sequence('HELIo 0123456789._-^"    ')
+
 keep_alive = True
 while keep_alive:
     while arduino.available():

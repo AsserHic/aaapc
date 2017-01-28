@@ -19,12 +19,10 @@ const int OPER_TEMPERATURE   = 33;
 const int OPER_DISTANCE      = 35;
 const int OPER_HUMAN_DETECT  = 36;
 const int OPER_JOYSTICK      = 38;
+const int OPER_DISPLAY_SEQ   = 40;
 
-const int DISPLAY_SEQUENCE[] = {
-  DISPLAY_VALUE_VOID, DISPLAY_VALUE_VOID, DISPLAY_VALUE_VOID, DISPLAY_VALUE_VOID,
-  DISPLAY_VALUE_0, DISPLAY_VALUE_1, DISPLAY_VALUE_2, DISPLAY_VALUE_3, DISPLAY_VALUE_4,
-  DISPLAY_VALUE_5, DISPLAY_VALUE_6, DISPLAY_VALUE_7, DISPLAY_VALUE_8, DISPLAY_VALUE_9
-};
+byte DISPLAY_SEQUENCE[150];
+int  disp_seq_len = 0;
 
 FourDigitDisplay digDisplay;
 unsigned long    dispUpdated    = 0;
@@ -44,6 +42,8 @@ void custom_setup() {
   for (int pitch=100; pitch<1000; pitch += 100) {
      tone(PASSIVE_BUZZLER, pitch, 100);
   }
+
+  disp_seq_len = 0;
 }
 
 /*
@@ -89,6 +89,9 @@ void loop() {
         writeOperation(op_id);
         Serial.println(readDistance());
         break;
+      case OPER_DISPLAY_SEQ:
+        updateDisplaySequence();
+        break;
       case OPER_BUZZLER:
         tone(PASSIVE_BUZZLER,
              Serial.parseInt(),
@@ -111,14 +114,31 @@ void advance() {
     if (currentTime > dispUpdated + 1000) {
        dispUpdated = currentTime;
        for (int dp=0; dp < 4; dp++) {
-          digDisplay.set_value(dp, DISPLAY_SEQUENCE[(dispPhase+dp) % ARR_LENGTH(DISPLAY_SEQUENCE)]);
+          digDisplay.set_value(dp, DISPLAY_SEQUENCE[(dispPhase+dp) % disp_seq_len]);
        }
-       if (dispPhase++ >= ARR_LENGTH(DISPLAY_SEQUENCE)) dispPhase = 0;
+       if (dispPhase++ >= disp_seq_len) dispPhase = 0;
     }
   }
   digDisplay.advance();
 
   if (phase++ >= 1400) phase = 0;
+}
+
+void updateDisplaySequence() {
+  int length = Serial.parseInt();
+  if (length < 0 || length > 150) {
+     writeError("Invalid seq length");
+     return;
+  }
+
+  for (int i=0; i<length; i++) {
+     int value = Serial.parseInt();
+     if (value < 0 || value > 255) {
+        value = DISPLAY_VALUE_VOID;
+     }
+     DISPLAY_SEQUENCE[i] = value;
+  }
+  disp_seq_len = length;
 }
 
 boolean updateHumanDetectorStatus(boolean forceSubmit) {
