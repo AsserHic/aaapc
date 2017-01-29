@@ -108,7 +108,7 @@ void advance() {
   if (phase % 5 == 0) updateHumanDetectorStatus(false);
   if (phase % 4 == 0) updateJoystickStatus(false);
 
-  if (phase % 100 == 0 && dispSeqLen > 0) {
+  if (phase % 100 == 0) {
     unsigned long currentTime = millis();
     if (currentTime > dispUpdated + 1000) {
        dispUpdated = currentTime;
