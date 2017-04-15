@@ -2,7 +2,7 @@
 
 import logging
 import random
-from time import sleep
+import time
 
 from arduino_connection import *
 from lcd_provider import LCDProvider
@@ -31,6 +31,13 @@ def mode_led_yellow(activate):
 def mode_led_white(activate):
     arduino.send_request(OPER_LED_WHITE, (1 if activate else 0))
 
+def mode_show_time(activate):
+    if activate:
+      message = time.strftime('%H%M')
+    else:
+      message = 'AAAPC    '
+    arduino.set_display_sequence(message)
+
 MODES = [
     mode_led_blue,
     mode_led_white,
@@ -38,6 +45,7 @@ MODES = [
     mode_distance,
     mode_temperature,
     mode_light_sensor,
+    mode_show_time,
 ]
 current_mode = 0
 
@@ -53,12 +61,13 @@ def changeMode(old_mode, adjustment):
     return new_mode
 
 arduino = ArduinoConnection()
+time.sleep(1) # Initialization delay
 
 lcd = LCDProvider()
 
 light_sensors = [0, 0]
 
-arduino.set_display_sequence('HELIo 0123456789._-^"    ')
+arduino.set_display_sequence('HELL0 0123456789._-^"    ')
 
 keep_alive = True
 while keep_alive:
@@ -99,7 +108,7 @@ while keep_alive:
           logging.error('arduino error: {}'.format(args))
        else:
           logging.error('Unexpected operation {}: {}.'.format(operation, args))
-    sleep(0.1)
+    time.sleep(0.1)
 
 lcd.show_text('Exit!')
 logging.info('Bye bye!')
