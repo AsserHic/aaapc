@@ -36,6 +36,8 @@ class FourDigitDisplay {
 
     void set_value(int pos, byte value);
 
+    void clear();
+
     void advance();
 
 };

@@ -108,7 +108,7 @@ void advance() {
   if (phase % 5 == 0) updateHumanDetectorStatus(false);
   if (phase % 4 == 0) updateJoystickStatus(false);
 
-  if (phase % 100 == 0) {
+  if ((dispSeqLen > 4) && (phase % 100 == 0)) {
     unsigned long currentTime = millis();
     if (currentTime > dispUpdated + 1000) {
        dispUpdated = currentTime;
@@ -139,6 +139,13 @@ void updateDisplaySequence() {
   }
   dispPhase  = 0;
   dispSeqLen = length;
+
+  if (length <= 4) {
+    digDisplay.clear();
+    for (int dp=0; dp < length; dp++) {
+       digDisplay.set_value(dp, dispSeq[dp]);
+    }
+  }
 }
 
 boolean updateHumanDetectorStatus(boolean forceSubmit) {

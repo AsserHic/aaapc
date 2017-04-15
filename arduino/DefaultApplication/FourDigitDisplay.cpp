@@ -27,7 +27,11 @@ void FourDigitDisplay::disable_if_empty() {
 
 void FourDigitDisplay::set_enabled(boolean value) {
   m_enabled = value;
-  disable_if_empty();
+  if (m_enabled) {
+     disable_if_empty();
+  } else {
+     vpSet(DISPLAY_POSITIONS[m_phase], false);
+  }
 }
 
 void FourDigitDisplay::set_value(int pos, byte value) {
@@ -39,11 +43,18 @@ void FourDigitDisplay::set_value(int pos, byte value) {
   }
 }
 
+void FourDigitDisplay::clear() {
+  for (int i=0; i<digits; i++) {
+    m_values[i] = DISPLAY_VALUE_VOID;
+  }
+  set_enabled(false);
+}
+
 void FourDigitDisplay::advance() {
   if (!m_enabled) return;
 
   vpSet(DISPLAY_POSITIONS[m_phase], false);
-  m_phase = (m_phase+1) % 4;
+  m_phase = (m_phase+1) % digits;
 
   byte value = m_values[m_phase];
   if (value == DISPLAY_VALUE_VOID) {
